@@ -1,0 +1,49 @@
+﻿
+@model RSSProject.Models.TopTen
+@{
+    Layout = null;
+    if (IsPost)
+    {
+        //Create a string with the top ten stories in a readable format
+        String data = null;
+        for (int i = 0; i < Model.TopFeeds.Count(); ++i)
+        {
+            data = data + i + ": " + Model.TopFeeds[i].Title + "\n" + Model.TopFeeds[i].Description + "\n" + Model.TopFeeds[i].Date + "\n" + Model.TopFeeds[i].Link + "\n" + Model.TopFeeds[i].ImageURL + "\n\n";
+        }
+
+        //Store the top ten stories in a textfile on a server (does not currently exist)
+        var dataFile = Server.MapPath("~/App_Data/top10.txt");
+        File.WriteAllText(@dataFile, data);
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>BBC</title>
+</head>
+<body>
+<!-- Refreshes the page using a post request, saving the top ten to a server -->
+<form id="TextDownload" method="post" style="width: 100%; text-align: center; margin-top: 32px">
+    <input type="submit" value="Save the Top Ten"/>
+</form>
+<div style="padding: 2% 10%">
+    <!-- Iterates through the TopFeeds, creating a div for each containing the title, description, publish date, link and thumbnail of the story -->
+    @for (int i = 0; i < Model.TopFeeds.Count(); ++i)
+    {
+        <div style="width: 70%; display: inline-block">
+            <h1 style="font-style: italic">@Model.TopFeeds[i].Title</h1>
+            <p>@Model.TopFeeds[i].Description</p><br/>
+            <p style="color: #808080">@Model.TopFeeds[i].Date</p>
+            <a href="@Model.TopFeeds[i].Link">@Model.TopFeeds[i].Link</a><br/>
+        </div>
+        <div style="width: 20%; display: inline-block">
+            <img src="@Model.TopFeeds[i].ImageURL" style="vertical-align: middle; width: 100%"/>
+        </div><hr/>
+    }
+</div>
+</body>
+
+</html>
